@@ -106,10 +106,10 @@ namespace fc {
                {
                  fc::thread::current().set_name("asio");
                  
-                 #BOOST_SCOPE_EXIT(void)
+                 //BOOST_SCOPE_EXIT(void)
                  {
                  } 
-                 #BOOST_SCOPE_EXIT_END
+                 //BOOST_SCOPE_EXIT_END
 
                  while (!io->stopped())
                  {
