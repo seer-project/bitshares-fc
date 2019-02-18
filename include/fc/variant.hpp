@@ -92,6 +92,8 @@ namespace fc
    void to_variant( const uint64_t& var,  variant& vo,  uint32_t max_depth = 1 );
    void to_variant( const int64_t& var,   variant& vo,  uint32_t max_depth = 1 );
 
+   void to_variant( const bool& var,      variant& vo,  uint32_t max_depth = 1 );
+
    void to_variant( const variant_object& var, variant& vo,        uint32_t max_depth );
    void from_variant( const variant& var,      variant_object& vo, uint32_t max_depth );
    void to_variant( const mutable_variant_object& var, variant& vo,   uint32_t max_depth );
@@ -129,10 +131,10 @@ namespace fc
    template<typename T>
    void from_variant( const variant& var, std::deque<T>& vo, uint32_t max_depth );
 
-   template<typename T>
-   void to_variant( const fc::flat_set<T>& var,   variant& vo, uint32_t max_depth );
-   template<typename T>
-   void from_variant( const variant& var, fc::flat_set<T>& vo, uint32_t max_depth );
+   template<typename T, typename... A>
+   void to_variant( const fc::flat_set<T, A...>& var,   variant& vo, uint32_t max_depth );
+   template<typename T, typename... A>
+   void from_variant( const variant& var, fc::flat_set<T, A...>& vo, uint32_t max_depth );
 
    template<typename T>
    void to_variant( const std::set<T>& var,  variant& vo,  uint32_t max_depth );
@@ -173,7 +175,7 @@ namespace fc
     *        and variant_object's.  
     *
     * variant's allocate everything but strings, arrays, and objects on the
-    * stack and are 'move aware' for values allcoated on the heap.  
+    * stack and are 'move aware' for values allocated on the heap.
     *
     * Memory usage on 64 bit systems is 16 bytes and 12 bytes on 32 bit systems.
     */
@@ -211,6 +213,9 @@ namespace fc
         variant( uint32_t val, uint32_t max_depth = 1 );
         variant( int32_t val, uint32_t max_depth = 1 );
         variant( uint64_t val, uint32_t max_depth = 1 );
+#ifdef __APPLE__
+        variant( size_t val, uint32_t max_depth = 1 );
+#endif
         variant( int64_t val, uint32_t max_depth = 1 );
         variant( double val, uint32_t max_depth = 1 );
         variant( bool val, uint32_t max_depth = 1 );
@@ -349,7 +354,7 @@ namespace fc
         void    clear();
       private:
         void    init();
-        double  _data;                ///< Alligned according to double requirements
+        double  _data;                ///< Aligned according to double requirements
         char    _type[sizeof(void*)]; ///< pad to void* size
    };
    typedef optional<variant> ovariant;
